@@ -78,11 +78,12 @@ void loadingScene::loadingImage()
 	_loading->loadImage("백그라운드1", "Images/Background1_수정.bmp", 1940, 810);
 	_loading->loadImage("백그라운드1_미니", "Images/Background1_미니.bmp", 194, 81);
 	_loading->loadImage("백그라운드2", "Images/Background2_수정.bmp", 1940, 810);
-	_loading->loadImage("백그라운드2_미니", "Images/Background2_미니.bmp", 194, 80);
+	_loading->loadImage("백그라운드2_미니", "Images/Background2_미니.bmp", 194, 81);
 	_loading->loadImage("백그라운드3", "Images/Background3_수정.bmp", 1940, 810);
-	_loading->loadImage("백그라운드3_미니", "Images/Background3_미니.bmp", 192, 81);
+	_loading->loadImage("백그라운드3_미니", "Images/Background3_미니.bmp", 194, 81);
 	_loading->loadImage("백그라운드4", "Images/Background4_수정.bmp", 1940, 810);
-	_loading->loadImage("백그라운드4_미니", "Images/Background4_미니.bmp", 192, 80);
+	_loading->loadImage("백그라운드4_미니", "Images/Background4_미니.bmp", 194, 81);
+
 	_loading->loadImage("스컬메뉴", "Images/스컬메뉴.bmp", 1280, 720);
 	_loading->loadImage("메뉴_기본", "Images/메뉴_기본.bmp", 378, 560);
 	_loading->loadImage("메뉴_스타트", "Images/메뉴_스타트.bmp", 378, 560);
@@ -105,14 +106,22 @@ void loadingScene::loadingImage()
 	_loading->loadImage("버튼_지형", "Images/버튼_지형.bmp", 173, 57);
 	_loading->loadImage("버튼_지형온", "Images/버튼_지형온.bmp", 173, 57);
 	_loading->loadImage("툴박스", "Images/툴박스.bmp", 1000, 450);
+	//인게임 메뉴
 	_loading->loadImage("인게임메뉴화면", "Images/인게임메뉴화면.bmp", 372, 696);
+	_loading->loadImage("인게임_계속버튼", "Images/인게임_계속버튼.bmp", 173, 57);
+	_loading->loadImage("인게임_계속버튼On", "Images/인게임_계속버튼On.bmp", 173, 57);
+	_loading->loadImage("인게임_옵션버튼", "Images/인게임_옵션버튼.bmp", 173, 57);
+	_loading->loadImage("인게임_옵션버튼On", "Images/인게임_옵션버튼On.bmp", 173, 57);
+	_loading->loadImage("인게임_나가기버튼", "Images/인게임_나가기버튼.bmp", 173, 57);
+	_loading->loadImage("인게임_나가기버튼On", "Images/인게임_나가기버튼On.bmp", 173, 57);
 
 
 	_loading->loadFrameImage("지형타일", "Images/지형타일.bmp", 510, 340, 15, 10);
 	_loading->loadFrameImage("지형타일_미니", "Images/지형타일_미니.bmp", 51, 34, 15, 10);
-	_loading->loadFrameImage("달리기", "Images/일반해골달리기.bmp", 320, 64, 8, 2);
-	_loading->loadFrameImage("점프", "Images/점프.bmp", 252, 72, 7, 2);
-	_loading->loadFrameImage("공격", "Images/공격.bmp", 531, 106, 9, 2);
+	_loading->loadFrameImage("달리기", "Images/달리기.bmp", 640, 128, 8, 2);
+	_loading->loadFrameImage("점프", "Images/점프.bmp", 448, 128, 7, 2);
+	_loading->loadFrameImage("공격", "Images/공격.bmp", 991, 198, 9, 2);
+	_loading->loadFrameImage("IDLE", "Images/IDLE.bmp", 310, 128, 4, 2);
 
 	//로딩이 너무 빠르게 진행되서 천천히 돌아가도록 테스트용으로 만들기
 	//for (int i = 0; i < 280; i++)

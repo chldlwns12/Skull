@@ -1,15 +1,17 @@
 #pragma once
 #include "gameNode.h"
 #include "tileNode.h"
+#include "player.h"
 
 class inGameScene : public gameNode
 {
 private:
-	//player* ptPlayer;
+	player* ptPlayer;
 	//enemy* ptEnemy;
 
 	//타일 -이준
 	tagTile sIngameTile[TILEX * TILEY];
+	tagTile sIngameMiniTile[TILEX * TILEY];
 	//배경화면 렉트 -이준
 	RECT rcIngameBg;
 	image* inGameBgImg1;
@@ -18,9 +20,17 @@ private:
 	image* inGameBgImg4;
 	//로드용 이미지 - 이준
 	image* inGameTerrainImg;
-	image* inGameObjectImg;
+	image* inGameTerrainMiniImg;
+	//image* inGameObjectImg;
 	//윈사이즈 렉트 - 이준
 	RECT rcIngameWins;
+	//미니맵 렉트
+	RECT rcIngameMini;
+	RECT rcIngameMcamera;
+	image* inGameMiniBgImg1;
+	image* inGameMiniBgImg2;
+	image* inGameMiniBgImg3;
+	image* inGameMiniBgImg4;
 
 	RECT rc[100];
 	tagEnemyData sEnemyData_ingame[100];
@@ -28,11 +38,12 @@ private:
 	//메뉴 렉트 - 이준 0413
 	RECT rcMenuMain;
 	float menuX, menuY;
-	//RECT rcMenuButtonRS;	//리썸
-	//RECT rcMenuButtonOP;	//옵션
-	//RECT rcMenuButtonEX;	//엑시트
-	//bool isTouch_RS;
-	//bool isTouch_EX;
+	RECT rcMenuButtonRS;	//리썸
+	RECT rcMenuButtonOP;	//옵션
+	RECT rcMenuButtonQT;	//나가기
+	bool isTouch_RS;
+	bool isTouch_OP;
+	bool isTouch_QT;
 
 	bool isMenu;
 public:
@@ -42,6 +53,7 @@ public:
 	void render();
 
 	void load();
+	void miniLoad();
 
 	inGameScene() {}
 	~inGameScene() {}

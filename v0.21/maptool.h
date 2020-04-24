@@ -131,7 +131,8 @@ public:
 	//세이브 로드
 	void save();
 	void load();
-
+	void miniSave();
+	void miniLoad();
 
 	//툴박스 업데이트
 	void toolBoxUpdate();

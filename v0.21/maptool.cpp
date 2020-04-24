@@ -75,8 +75,8 @@ HRESULT maptool::init()
 	//백그라운드 렉트
 	rcBg = RectMake(0, 0, 1940, 810);
 	//미니맵 렉트
-	rcMini = RectMake(0, 0, 194, 81);
-	rcMcamera = RectMake(0, 0, 128, 72);
+	rcMini = RectMake(WINSIZEX - 194, 0, 194, 81);
+	rcMcamera = RectMake(WINSIZEX - 194, 0, 128, 72);
 
 
 	//버튼박스클릭 - 버튼클릭했을때 이미지변경 불변수
@@ -159,11 +159,13 @@ void maptool::update()
 			{
 				isSaveClick = true;		//추가 세이브눌렀을때 이미지 변경해줌
 				this->save();
+				this->miniSave();
 			}
 			if (PtInRect(&sToolBtn.rcLoad, _ptMouse))
 			{
 				isLoadClick = true;		//추가 로드눌렀을때 이미지 변경해줌
 				this->load();
+				this->miniLoad();
 			}
 
 			if (PtInRect(&sToolBtn.rcEraser, _ptMouse))
@@ -359,11 +361,13 @@ void maptool::update()
 			{
 				isSaveClick = true;		//추가 세이브 눌렀을때 이미지 변경해줌
 				this->save();
+				this->miniSave();
 			}
 			if (PtInRect(&sToolBtn.rcLoad, _ptMouse))
 			{
 				isLoadClick = true;		//추가 로드 눌렀을때 이미지 변경해줌
 				this->load();
+				this->miniLoad();
 			}
 
 			if (PtInRect(&sToolBtn.rcEraser, _ptMouse))
@@ -592,22 +596,43 @@ void maptool::update()
 	{
 		for (int i = 0; i < TILEX * TILEY; i++)
 		{
+			if ((sToolBox.toggle)) break;
+
 			if (IntersectRect(&tempRc, &sTile[i].rc, &dragRc))
 			{
-				sTile[i].isTouch = true;
+				if (ctrlSelect == CTRL_ERASER)
+				{
+					sTile[i].isTouch = false;
+				}
+				else
+				{
+					sTile[i].isTouch = true;
+				}
 			}
 		}
 	}
 	else
 	{
-		for (int i = 0; i < TILEX * TILEY; i++)
+		if (INPUT->GetKey(VK_LBUTTON))
 		{
-			if (PtInRect(&sTile[i].rc, _ptMouse))
+			for (int i = 0; i < TILEX * TILEY; i++)
 			{
-				sTile[i].isTouch = true;
+				if ((sToolBox.toggle)) break;
+
+				if (PtInRect(&sTile[i].rc, _ptMouse))
+				{
+					if (ctrlSelect == CTRL_ERASER)
+					{
+						sTile[i].isTouch = false;
+					}
+					else
+					{
+						sTile[i].isTouch = true;
+					}
+				}
 			}
 		}
-	}
+	}	
 }
 
 void maptool::render()
@@ -769,6 +794,7 @@ void maptool::render()
 							{
 								sTile[i].terrainFrameX = 0;
 								sTile[i].terrainFrameY = 0;
+								//sTile[i].isTouch = false;
 								sMiniTile[i].terrainFrameX = 0;
 								sMiniTile[i].terrainFrameY = 0;
 							}
@@ -797,6 +823,10 @@ void maptool::render()
 		for (int i = 0; i < TILEX * TILEY; i++)
 		{
 			FrameRect(getMemDC(), sTile[i].rc, RGB(0, 0, 0));
+			if (sTile[i].isTouch)
+			{
+				Rectangle(getMemDC(), sTile[i].rc);
+			}
 		}
 	}
 
@@ -1158,6 +1188,7 @@ void maptool::setMap()
 					{
 						sTile[i].terrainFrameX = 0;
 						sTile[i].terrainFrameY = 0;
+						//sTile[i].isTouch = false;
 						sMiniTile[i].terrainFrameX = 0;
 						sMiniTile[i].terrainFrameY = 0;
 					}
@@ -1198,6 +1229,28 @@ void maptool::load()
 	file = CreateFile("save.map", GENERIC_READ, 0, NULL, OPEN_EXISTING,
 		FILE_ATTRIBUTE_NORMAL, NULL);
 	ReadFile(file, sTile, sizeof(tagTile) * TILEX * TILEY, &read, NULL);
+	CloseHandle(file);
+}
+
+void maptool::miniSave()
+{
+	HANDLE file;
+	DWORD write;
+
+	file = CreateFile("savemini.map", GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL, NULL);
+	WriteFile(file, sMiniTile, sizeof(tagTile) * TILEX * TILEY, &write, NULL);
+	CloseHandle(file);
+}
+
+void maptool::miniLoad()
+{
+	HANDLE file;
+	DWORD read;
+
+	file = CreateFile("savemini.map", GENERIC_READ, 0, NULL, OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL, NULL);
+	ReadFile(file, sMiniTile, sizeof(tagTile) * TILEX * TILEY, &read, NULL);
 	CloseHandle(file);
 }
 
