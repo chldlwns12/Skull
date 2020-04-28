@@ -128,8 +128,6 @@ void inGameScene::update()
 		}
 	}
 
-	//지형 충돌
-	RECT rcTemp;
 
 	//카메라 이동
 	if (INPUT->GetKey(VK_RIGHT))
@@ -151,22 +149,6 @@ void inGameScene::update()
 			}
 		}
 
-		for (int i = 0; i < TILEY * TILEX; i++)
-		{
-			if (sIngameTile[i].isTouch)
-			{
-				if(IntersectRect(&rcTemp, &sIngameTile[i].rc, &ptPlayer->getRcRight()))
-				{
-					ptPlayer->setPlayerX(sIngameTile[i].rc.left - 40);
-					//ptPlayer->setPlayerSpeed(0.f);
-					isCollision = true;
-				}
-				else
-				{
-					isCollision = false;
-				}
-			}
-		}
 	}
 	
 	if (INPUT->GetKey(VK_LEFT))
@@ -188,24 +170,68 @@ void inGameScene::update()
 			}
 		}
 
-		for (int i = 0; i < TILEY * TILEX; i++)
+	}
+
+	//if (INPUT->GetKey('Z'))
+	//{
+	//	if (ptPlayer->getIsLeft() == true && ptPlayer->getIsDash() == true)
+	//	{	
+	//		if (ptPlayer->getRcPlayer().right < WINSIZEX)
+	//		{
+	//			rcIngameBg.left += 20;
+	//			rcIngameBg.right += 20;
+	//			rcIngameMcamera.left -= 2;
+	//			rcIngameMcamera.right -= 2;
+	//		}
+	//	}
+	//	else if(ptPlayer->getIsLeft() == false && ptPlayer->getIsDash() == true)
+	//	{
+	//		if (ptPlayer->getRcPlayer().left > 0)
+	//		{
+	//			rcIngameBg.left -= 20;
+	//			rcIngameBg.right -= 20;
+	//			rcIngameMcamera.left += 2;
+	//			rcIngameMcamera.right += 2;
+	//		}
+	//	}
+	//}
+
+	//지형 충돌렉트
+	RECT rcTemp;
+
+	//벽충돌
+	for (int i = 0; i < TILEY * TILEX; i++)
+	{
+		if (sIngameTile[i].isTouch)
 		{
-			if (sIngameTile[i].isTouch)
+			if(IntersectRect(&rcTemp, &sIngameTile[i].rc, &ptPlayer->getRcRight()))
 			{
-				if (IntersectRect(&rcTemp, &sIngameTile[i].rc, &ptPlayer->getRcLeft()))
-				{
-					ptPlayer->setPlayerX(sIngameTile[i].rc.right + 40);
-					//ptPlayer->setPlayerSpeed(0.f);
-					isCollision = true;
-				}
-				else
-				{
-					isCollision = false;
-				}
+				ptPlayer->setPlayerX(sIngameTile[i].rc.left - 40);
+				//ptPlayer->setPlayerSpeed(0.f);
+				isCollision = true;
+			}
+			else
+			{
+				isCollision = false;
 			}
 		}
 	}
-
+	for (int i = 0; i < TILEY * TILEX; i++)
+	{
+		if (sIngameTile[i].isTouch)
+		{
+			if (IntersectRect(&rcTemp, &sIngameTile[i].rc, &ptPlayer->getRcLeft()))
+			{
+				ptPlayer->setPlayerX(sIngameTile[i].rc.right + 40);
+				//ptPlayer->setPlayerSpeed(0.f);
+				isCollision = true;
+			}
+			else
+			{
+				isCollision = false;
+			}
+		}
+	}
 	//바닥 충돌
 	for (int i = 0; i < TILEY * TILEX; i++)
 	{
@@ -219,10 +245,13 @@ void inGameScene::update()
 				ptPlayer->setState(PLAYER_IDLE);
 				ptPlayer->setIsJump(false);
 			}
-			//else if(ptPlayer->getIsJump() == false)
+			//else
 			//{
-			//	playerGravity += 0.7f;
-			//	ptPlayer->setGravity(playerGravity);
+			//	if (ptPlayer->getIsJump() == false)
+			//	{
+			//		playerGravity += 0.7f;
+			//		ptPlayer->setGravity(playerGravity);
+			//	}
 			//}
 		}
 	}

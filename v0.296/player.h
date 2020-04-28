@@ -26,17 +26,27 @@ private:
 	int attCount;
 	int attIndex;
 	RECT rcPlayer;
-
-	bool endAtt1;
-	bool endAtt2;
-	bool Att1;
-	bool Att2;
-
+	//공격
+	bool isEndAtt1;
+	bool isAtt1;
+	bool isAtt2;
+	bool isAttCool;
+	int Att1CoolDown;
+	int Att2CoolDown;
+	//대쉬
+	int Efect1;
+	int Efect2;
+	int Efect3;
+	int Efect4;
+	int Efect5;
+	int saveX[5];
+	int saveY[5];
+	bool isDash;
+	//충돌
 	POINT ptRight;
 	POINT ptLeft;
 	POINT ptTop;
 	POINT ptBottom;
-
 	RECT rcRight;
 	RECT rcLeft;
 	RECT rcTop;
@@ -53,8 +63,10 @@ private:
 	image* playerIdleImg;
 	image* playerJumpImg;
 	image* playerDashImg;
+	image* playerDashEfectImg1;
 	image* playerAttImg1;
 	image* playerAttImg2;
+
 public:
 	HRESULT init();
 	void release();
@@ -64,6 +76,8 @@ public:
 	void PlayerAnimation();
 
 	bool getIsJump() { return isJump; }
+	bool getIsLeft() { return isLeft; }
+	bool getIsDash() { return isDash; }
 	RECT getRcPlayer() { return rcPlayer; }
 	RECT getRcPlayerCamera() { return rcPlayerCamera; }
 	RECT getRcRight() { return rcRight; }

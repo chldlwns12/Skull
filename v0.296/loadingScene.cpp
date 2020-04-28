@@ -123,6 +123,8 @@ void loadingScene::loadingImage()
 	_loading->loadFrameImage("공격2", "Images/공격2.bmp", 330, 198, 3, 2);
 	//_loading->loadFrameImage("IDLE", "Images/IDLE.bmp", 407, 128, 5, 2);
 	_loading->loadFrameImage("IDLE", "Images/IDLE_수정.bmp", 411, 128, 5, 2);
+	_loading->loadFrameImage("대쉬", "Images/대쉬.bmp", 85, 108, 1, 2);
+	_loading->loadFrameImage("대쉬효과", "Images/대쉬효과.bmp", 85, 108, 1, 2);
 
 	//로딩이 너무 빠르게 진행되서 천천히 돌아가도록 테스트용으로 만들기
 	//for (int i = 0; i < 280; i++)

@@ -8,6 +8,8 @@ HRESULT player::init()
 	playerJumpImg = IMAGEMANAGER->findImage("점프");
 	playerAttImg1 = IMAGEMANAGER->findImage("공격1");
 	playerAttImg2 = IMAGEMANAGER->findImage("공격2");
+	playerDashImg = IMAGEMANAGER->findImage("대쉬");
+	playerDashEfectImg1 = IMAGEMANAGER->findImage("대쉬효과");
 
 	playerX = 100.f;
 	playerY = 555.f;
@@ -22,11 +24,26 @@ HRESULT player::init()
 	animationCount = 0;
 	animationIndex = 0;
 	isLeft = false;
-	endAtt1 = false;
-	endAtt2 = false;
-	Att1 = false;
-	Att2 = false;
+	//공격
+	isEndAtt1 = false;
+	isAtt1 = false;
+	isAtt2 = false;
+	isAttCool = false;
+	Att1CoolDown = 0;
+	Att2CoolDown = 0;
+	//대쉬
+	Efect1 = 0;
+	Efect2 = 0;
+	Efect3 = 0;
+	Efect4 = 0;
+	Efect5 = 0;
+	isDash = false;
 
+	for (int i = 0; i < 5; i++)
+	{
+		saveX[i] = 0;
+		saveY[i] = 0;
+	}
 	return S_OK;
 }
 
@@ -59,9 +76,9 @@ void player::update()
 			playerX += playerSpeed;
 		}
 
+		isLeft = false;
 		if (isJump == false)
 		{
-			isLeft = false;
 			_playerState = PLAYER_RUN;
 		}
 	}
@@ -79,9 +96,9 @@ void player::update()
 			playerX -= playerSpeed;
 		}
 
+		isLeft = true;
 		if (isJump == false)
 		{
-			isLeft = true;
 			_playerState = PLAYER_RUN;
 		}
 	}
@@ -116,57 +133,170 @@ void player::update()
 	//공격
 	if (INPUT->GetKeyDown('X'))
 	{
-		//attIndex++;
-
-		if (_playerState == PLAYER_ATT && endAtt1 == true)
+		Att1CoolDown = 0;
+		Att2CoolDown = 0;
+		if (_playerState == PLAYER_ATT && isEndAtt1 == true)
 		{
 			_playerState = PLAYER_ATT2;
 		}
-		else if(_playerState == PLAYER_RUN || _playerState == PLAYER_JUMP || _playerState == PLAYER_DOUBLEJUMP || _playerState == PLAYER_IDLE)
+		else if(_playerState == PLAYER_RUN || _playerState == PLAYER_JUMP || _playerState == PLAYER_DOUBLEJUMP || _playerState == PLAYER_IDLE || _playerState == PLAYER_ATT2)
 		{
 			_playerState = PLAYER_ATT;
 		}
 
-		if (isLeft == false && _playerState == PLAYER_ATT && Att1 == false)
+		if (isLeft == false && _playerState == PLAYER_ATT && isAtt1 == false)
 		{
 			animationIndex = 0;
-			Att1 = true;
-			Att2 = false;
+			isAtt1 = true;
+			isAtt2 = false;
 		}
-		else if (isLeft == true && _playerState == PLAYER_ATT && Att1 == false)
+		else if (isLeft == true && _playerState == PLAYER_ATT && isAtt1 == false)
 		{
 			animationIndex = 6;
-			Att1 = true;
-			Att2 = false;
+			isAtt1 = true;
+			isAtt2 = false;
 		}
 
-		if (isLeft == false && _playerState == PLAYER_ATT2 && Att2 == false)
+		if (isLeft == false && _playerState == PLAYER_ATT2 && isAtt2 == false)
 		{
 			animationIndex = 0;
-			Att2 = true;
-			Att1 = false;
+			isAtt2 = true;
+			isAtt1 = false;
 		}
-		else if (isLeft == true && _playerState == PLAYER_ATT2 && Att2 == false)
+		else if (isLeft == true && _playerState == PLAYER_ATT2 && isAtt2 == false)
 		{
 			animationIndex = 2;
-			Att2 = true;
-			Att1 = false;
+			isAtt2 = true;
+			isAtt1 = false;
+		}
+	}
+	if (INPUT->GetKeyUp('X'))
+	{
+		isAttCool = true;
+	}
+
+	//대쉬
+	if (INPUT->GetKeyDown('Z'))// && INPUT->GetKey(VK_RIGHT) || INPUT->GetKeyDown('Z') && INPUT->GetKey(VK_LEFT))
+	{
+		_playerState = PLAYER_DASH;
+		Efect1 = 0;
+		Efect2 = 0;
+		Efect3 = 0;
+		Efect4 = 0;
+		Efect5 = 0;
+		isDash = true;
+	}
+
+	if (_playerState == PLAYER_DASH)
+	{
+		if (Efect1 < 65)
+		{
+			if (isLeft)
+			{
+				if (rcPlayer.left > 0)
+				{
+					playerX -= 15.f;
+				}
+			}
+			else
+			{
+				if (rcPlayer.right < WINSIZEX)
+				{
+					playerX += 15.f;
+				}
+			}
+		}
+		else
+		{
+			isDash = false;
+		}
+
+		Efect1 += 6;
+		saveX[0] = playerX - 40;
+		saveY[0] = playerY - 22;
+
+		if (Efect1 >= 255)
+		{
+			Efect1 = 255;
+		}
+		if (Efect1 >= 20)
+		{
+			Efect2 += 7;
+		}
+		if (Efect1 == 6)
+		{
+			saveX[1] = playerX - 40;
+			saveY[1] = playerY - 22;
+		}
+
+		if (Efect2 >= 255)
+		{
+			Efect2 = 255;
+		}
+		if (Efect2 >= 20)
+		{
+			Efect3 += 8;
+		}
+		if (Efect2 == 7)
+		{
+			saveX[2] = playerX - 40;
+			saveY[2] = playerY - 22;
+		}
+
+		if (Efect3 >= 255)
+		{
+			Efect3 = 255;
+		}
+		if (Efect3 >= 20)
+		{
+			Efect4 += 9;
+		}
+		if (Efect3 == 8)
+		{
+			saveX[3] = playerX - 40;
+			saveY[3] = playerY - 22;
+		}
+
+		if (Efect4 >= 255)
+		{
+			Efect4 = 255;
+		}
+		if (Efect4 >= 20)
+		{
+			Efect5 += 10;
+		}
+		if (Efect4 == 9)
+		{
+			saveX[4] = playerX - 40;
+			saveY[4] = playerY - 22;
+		}
+
+
+		if (Efect5 >= 255)
+		{
+			Efect5 = 255;
+			_playerState = PLAYER_IDLE;
+		}
+	}
+	
+	if (isAttCool)
+	{
+		if (_playerState == PLAYER_ATT)
+		{
+			Att1CoolDown++;
+		}
+		if (_playerState == PLAYER_ATT2)
+		{
+			Att2CoolDown++;
 		}
 	}
 
-	//if (_playerState == PLAYER_ATT || _playerState == PLAYER_ATT2)
-	//{
-	//	attCount++;
-	//}
-	
-	//if (attCount % 60 == 0)// || attIndex > 2)
-	//{
-	//	_playerState = PLAYER_IDLE;
-	//	attCount = 0;
-	//	//attIndex = 0;
-	//	//Att1 = false;
-	//	//Att2 = false;
-	//}
+	if (Att1CoolDown % 60 == 50 || Att2CoolDown % 60 == 50)
+	{
+		_playerState = PLAYER_IDLE;
+		Att1CoolDown = 0;
+		Att2CoolDown = 0;
+	}
 
 	if (_playerState == PLAYER_JUMP || _playerState == PLAYER_DOUBLEJUMP || isJump)
 	{
@@ -209,6 +339,50 @@ void player::render()
 	if (_playerState == PLAYER_ATT2)
 	{
 		playerAttImg2->frameRender(getMemDC(), rcPlayer.left, rcPlayer.top - 30);
+	}
+	if (_playerState == PLAYER_DASH)
+	{
+		if (isLeft)
+		{
+			playerDashEfectImg1->alphaFrameRender(getMemDC(), saveX[0], saveY[0], Efect1);
+			if (Efect1 >= 20)
+			{
+				playerDashEfectImg1->alphaFrameRender(getMemDC(), saveX[1], saveY[1], Efect2);
+			}
+			if (Efect2 >= 20)
+			{
+				playerDashEfectImg1->alphaFrameRender(getMemDC(), saveX[2], saveY[2], Efect2);
+			}
+			if (Efect3 >= 20)
+			{
+				playerDashEfectImg1->alphaFrameRender(getMemDC(), saveX[3], saveY[3], Efect2);
+			}
+			if (Efect4 >= 20)
+			{
+				playerDashEfectImg1->alphaFrameRender(getMemDC(), saveX[4], saveY[4], Efect2);
+			}
+		}
+		else
+		{
+			playerDashEfectImg1->alphaFrameRender(getMemDC(), saveX[0], saveY[0], Efect1);
+			if (Efect1 >= 20)
+			{
+				playerDashEfectImg1->alphaFrameRender(getMemDC(), saveX[1], saveY[1], Efect2);
+			}
+			if (Efect2 >= 20)
+			{
+				playerDashEfectImg1->alphaFrameRender(getMemDC(), saveX[2], saveY[2], Efect2);
+			}
+			if (Efect3 >= 20)
+			{
+				playerDashEfectImg1->alphaFrameRender(getMemDC(), saveX[3], saveY[3], Efect2);
+			}
+			if (Efect4 >= 20)
+			{
+				playerDashEfectImg1->alphaFrameRender(getMemDC(), saveX[4], saveY[4], Efect2);
+			}
+		}
+		playerDashImg->frameRender(getMemDC(), rcPlayer.left, rcPlayer.top + 10);
 	}
 
 	char str[100];
@@ -348,7 +522,7 @@ void player::PlayerAnimation()
 					if (animationIndex > 6)
 					{
 						animationIndex = 6;
-						endAtt1 = true;
+						isEndAtt1 = true;
 					}
 					playerAttImg1->setFrameX(animationIndex);
 				}
@@ -362,7 +536,7 @@ void player::PlayerAnimation()
 					if (animationIndex < 0)
 					{
 						animationIndex = 0;
-						endAtt1 = true;
+						isEndAtt1 = true;
 					}
 					playerAttImg1->setFrameX(animationIndex);
 				}
@@ -379,7 +553,7 @@ void player::PlayerAnimation()
 				if (animationIndex > 2)
 				{
 					animationIndex = 2;
-					endAtt1 = false;
+					isEndAtt1 = false;
 				}
 				playerAttImg2->setFrameX(animationIndex);
 			}
@@ -393,13 +567,27 @@ void player::PlayerAnimation()
 				if (animationIndex < 0)
 				{
 					animationIndex = 0;
-					endAtt1 = false;
+					isEndAtt1 = false;
 				}
 				playerAttImg2->setFrameX(animationIndex);
 			}
 		}
 		break;
 	case PLAYER_DASH:
+		if (isLeft == false)
+		{
+			playerDashImg->setFrameY(0);
+			playerDashImg->setFrameX(1);
+			playerDashEfectImg1->setFrameY(0);
+			playerDashEfectImg1->setFrameX(1);
+		}
+		else
+		{
+			playerDashImg->setFrameY(1);
+			playerDashImg->setFrameX(1);
+			playerDashEfectImg1->setFrameY(1);
+			playerDashEfectImg1->setFrameX(1);
+		}
 		break;
 	}
 }
